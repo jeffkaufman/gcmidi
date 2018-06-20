@@ -152,6 +152,8 @@ void setup_gc() {
          kCFRunLoopRunHandledSource) {
     // callbacks for existing devices;
   }
+
+  if (!device.handle) die("game controller not detected");
 }
 
 
