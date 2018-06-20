@@ -181,7 +181,7 @@ void send_midi(int cc, int v) {
   attempt(MIDIReceived(midiendpoint, packetList), "error sending midi");
 }
 
-void send_cc_midi(int device_num, int device_val) {
+void send_cc_midi(int device_num, int device_val, int previous_val) {
   if (device_num > 5) {
     return; // duplicates
   }
@@ -214,9 +214,13 @@ void send_cc_midi(int device_num, int device_val) {
 
     if (device_val <= 128) {
       send_midi(22 + (device_num*2), 128-device_val);
-      send_midi(22 + (device_num*2) + 1, 0);
+      if (previous_val > 128) {
+        send_midi(22 + (device_num*2) + 1, 0);
+      }
     } else {
-      send_midi(22 + (device_num*2), 0);
+      if (previous_val <= 128) {
+        send_midi(22 + (device_num*2), 0);
+      }
       send_midi(22 + (device_num*2) + 1, device_val-128);
     }
   }
@@ -232,9 +236,8 @@ void poll_gc() {
     if (IOHIDDeviceGetValue(device.handle, element->handle, &value) == kIOReturnSuccess) {
       v = (int)IOHIDValueGetIntegerValue(value);
       if (v != element->last_value) {
-        printf("%d: %d\n", i, v);
+        send_cc_midi(i, v, element->last_value);
         element->last_value = v;
-        send_cc_midi(i, v);
       }
     }
   }
