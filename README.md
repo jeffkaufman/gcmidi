@@ -14,6 +14,15 @@ $ make run
 This will build it and start it running.  It will present as a midi device
 labeled "game controller" which sends CC values.
 
+Alternatively, if you don't want to build from source you can download a
+binary, though this may not have the latest changes:
+
+```
+$ wget https://www.jefftk.com/gcmidi
+$ chmod ugo+x gcmidi
+$ ./gcmidi
+```
+
 ## Mapping:
 
 ```
